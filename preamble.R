@@ -15,7 +15,7 @@ if(Sys.info()['sysname'] == 'Windows'){
 } else {
   popdir <- AD_local_mac['popdata']
   datadir <- AD_local_mac['data']
-  homedir <- AD_dirs_mac['home']
+  homedir <- AD_local_mac['home']
 }
 
 FH_dirs <- c('data' = 'Papers/Abhijit SLE Mortality Library/',

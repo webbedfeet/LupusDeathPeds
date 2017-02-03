@@ -21,6 +21,10 @@ study_info[study_info$pubID=='Estes_1971',]$end.enrollment=1969
 #
 ## Update Wu 2014 study start date
 study_info[study_info$pubID=='Wu_2014',]$max.f.up <-  396
+
+## Update Yu 2006 to include max followup
+study_info[study_info$pubID == 'Yu_2006',]$max.f.up <- 240
+
 # ## Update Joo information
 # study_info[study_info$pubID=='Joo_2015',]$end.fup = 2007
 # study_info[study_info$pubID=='Joo_2015',]$end.enrollment = NA

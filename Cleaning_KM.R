@@ -8,8 +8,8 @@ library(stringr)
 load('data/rda/fig_metadata.rda')
 load('data/rda/final_study_info.rda')
 
-fig_metadata <- fig_metadata %>%
-  mutate(male.only = ifelse(ids %in% study_info$pubID[study_info$male.only=='Y'],'Yes','No'))
+# fig_metadata <- fig_metadata %>%
+  # mutate(male.only = ifelse(ids %in% study_info$pubID[study_info$male.only=='Y'],'Yes','No'))
 
 KM_full <- fig_metadata %>% filter(male.only=='No', is.KM=='Yes')
 Ns <- study_info$number; names(Ns) <- study_info$pubID

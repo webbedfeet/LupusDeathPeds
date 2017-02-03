@@ -21,7 +21,6 @@ lambda[j] ~ dgamma(3.0,0.03);
 #lambda[j] ~ dunif(20,200);
 pr5[j] <- 1-pweib(5.0, nu[j],lambda[j]);
 pr10[j] <- 1-pweib(10.0, nu[j],lambda[j]);
-pr15[j] <- 1-pweib(15.0, nu[j],lambda[j]);
 }
 # Likelihood for IPD data
 for(i in 1:N1){
@@ -49,7 +48,6 @@ lambda[j] ~ dgamma(3.0,0.03);
 #lambda[j] ~ dunif(50,200);
 pr5[j] <- 1-pweib(5.0, nu[j],lambda[j]);
 pr10[j] <- 1-pweib(10.0, nu[j],lambda[j]);
-pr15[j] <- 1-pweib(15.0, nu[j],lambda[j]);
 }
 # Likelihood for IPD data
 for(i in 1:N1){
@@ -67,29 +65,20 @@ td[i] ~ dweib(nu[geog1[i]], lambda[geog1[i]])T(trunc[i],);
 writeLines(fullmodelcts2.bugs, con='fullmodelcts2.bug')
 
 ## Which are male-only studies
-fig_metadata <- fig_metadata %>%
-  mutate(male.only = ifelse(ids %in% study_info$pubID[study_info$male.only=='Y'],'Yes','No'))
-
-ipds <- KM2IPD[setdiff(names(KM2IPD), fig_metadata$ids[fig_metadata$male.only=='Yes'])]
-ipds <- c(ipds,
-          summaries2IPD[setdiff(names(summaries2IPD), study_info$pubID[study_info$male.only=='Y'])])
-
+# fig_metadata <- fig_metadata %>%
+#   mutate(male.only = ifelse(ids %in% study_info$pubID[study_info$male.only=='Y'],'Yes','No'))
+#
+# ipds <- KM2IPD[setdiff(names(KM2IPD), fig_metadata$ids[fig_metadata$male.only=='Yes'])]
+# ipds <- c(ipds,
+#           summaries2IPD[setdiff(names(summaries2IPD), study_info$pubID[study_info$male.only=='Y'])])
+ipds <- c(KM2IPD, summaries2IPD)
 ## Use study_info since summaries2IPD contains data from spreadsheet, not just graphical
 
 ## Remove suspicious study which is killing JAGS, Manger_2002. This does solve problem.
 # ipds <- ipds[-which(names(ipds)=='Manger_2002')]
-createDatasets(membership, ipds, outdir='adult', minkm=2, info=study_info, followup=fup_data)
+createDatasets(membership, ipds, outdir='peds', minkm=2, info=study_info, followup=fup_data)
 
 load('data/rda/window_membership_10.rda')
-createDatasets(membership_10,ipds,outdir='adult_10', minkm = 2)
+createDatasets(membership_10,ipds,outdir='peds_10', minkm = 2)
 
-
-## Create datasets for inception cohorts only
-ids = names(ipds)
-inception_ids = filter(study_info, inception==1)$pubID
-
-ipds_inception <- ipds[intersect(ids, inception_ids)]
-membership_inception <- membership %>% filter(pubID %in% inception_ids)
-createDatasets(membership_inception, ipds_inception, outdir='inception', minkm=2,
-               followup = fup_data %>% filter(pubID %in% inception_ids))
 

@@ -8,7 +8,6 @@ lambda[j] ~ dgamma(3.0,0.03);
 #lambda[j] ~ dunif(20,200);
 pr5[j] <- 1-pweib(5.0, nu[j],lambda[j]);
 pr10[j] <- 1-pweib(10.0, nu[j],lambda[j]);
-pr15[j] <- 1-pweib(15.0, nu[j],lambda[j]);
 }
 # Likelihood for IPD data
 for(i in 1:N1){

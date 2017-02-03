@@ -36,7 +36,8 @@ fig_metadata <- fig_metadata %>% left_join(select(bl, -n))
 
 ## ID true KM files
 fig_metadata <- fig_metadata %>%
-  mutate(is.KM = ifelse(filename %in% csv_km, 'Yes', 'No'))
+  mutate(is.KM = ifelse(filename %in% csv_km, 'Yes', 'No'),
+         Author = str_match(ids,'(\\w+)_[0-9]{4}')[,2])
 
 
 ## Some meta-data on the png files
@@ -49,7 +50,11 @@ pngfiles %>%
   str_to_title() -> png_id
 png <- tibble(pngfiles, png_id)
 
-old_png <- read_csv('pngfiles_orig.csv')
+old_png <- read_csv('pngfiles_orig.csv') %>%
+  mutate(Author = str_match(png_id, '(\\w+)_[0-9]{4}')[,2]) %>%
+  mutate(`from SLE` = ifelse(is.na(`from SLE`), 'n', 'y')) %>%
+  select(`from SLE`:Author) %>%
+  dplyr::rename(TimeInYears = years)
 # png %>%
 #   rbind(data.frame(pngfiles = rep('Urman-1977-fig1.png',2),
 #                    png_id = paste0('Urman_1977',c('a','b')))) %>%
@@ -57,19 +62,13 @@ old_png <- read_csv('pngfiles_orig.csv')
 
 # write.csv(png, file='pngfiles.csv')
 
+fig_metadata <- fig_metadata %>% left_join(old_png) %>% distinct() %>%
+  mutate(ids = str_replace(ids, '([a-c])$','_\\1'))
 
-bl = fig_metadata %>% left_join(old_png, by=c('ids'='png_id'))
 # bl$pngfiles[bl$filename=='Ballou-1982-fig2-summ.csv'] <- 'Ballou-1982-fig2.png'
 # bl$pngfiles[bl$filename=='Ballou-1982-fig3-summ.csv'] <- 'Ballou-1982-fig3.png'
-bl <- distinct(bl)
 # write.csv(bl, file='pngfiles.csv', row.names=F) # Add meta-data to this file
 # don't write this file again...metadata is already included
 
-png_info <- read_csv('pngfiles_orig.csv') %>%
-  mutate(`from SLE` = ifelse(is.na(`from SLE`), 'n','y'),
-         years = ifelse(is.na(years),'y','n')) %>%
-  dplyr::rename(TimeInYears = years)
-fig_metadata <- left_join(fig_metadata, png_info, by=c('ids'='png_id')) %>%
-  select(-pngfiles) %>% distinct()
 
 save(fig_metadata, file='data/rda/fig_metadata.rda')

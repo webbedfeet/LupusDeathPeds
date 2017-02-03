@@ -2,7 +2,7 @@
 # from data cleaning exercises
 # Inputs will be study_info.rda and fig_metadata.rda
 
-source('study_info.R')
+source('study_info_ped.r')
 load('data/rda/study_info.rda')
 
 study_info <- arrange(study_info, pubID) %>%
@@ -12,32 +12,34 @@ study_info <- arrange(study_info, pubID) %>%
 
 study_info$max.f.up <- as.numeric(study_info$max.f.up)
 
-## Fessel is from United States
-study_info$Country[study_info$pubID=='Fessel_1974'] <- 'United States'
-
-## Update Estes' information to start at 1961 and end at 1969
+ ## Fessel is from United States
+# study_info$Country[study_info$pubID=='Fessel_1974'] <- 'United States'
+#
+# ## Update Estes' information to start at 1961 and end at 1969
 study_info[study_info$pubID=='Estes_1971',]$start.enrollment=1961
 study_info[study_info$pubID=='Estes_1971',]$end.enrollment=1969
-
-## Update Joo information
-study_info[study_info$pubID=='Joo_2015',]$end.fup = 2007
-study_info[study_info$pubID=='Joo_2015',]$end.enrollment = NA
-
-## Make Siegel_1969_female the overall study record
-study_info$armID[study_info$armID=='Siegel_1969_female'] <- 'Siegel_1969'
-
-## Create an overall record for Hashimoto
-x <- study_info %>% dplyr::filter(Author=='Hashimoto') %>%
-  summarise_all(funs(ifelse(length(unique(.))==1, unique(.), NA)))
-bl <- study_info %>% dplyr::filter(Author=='Hashimoto')
-x <- x %>%
-  mutate(number = sum(bl$number),
-         female = weighted.mean(bl$female, bl$number),
-         f.up.months = weighted.mean(bl$f.up.months, bl$number),
-         max.f.up = max(bl$max.f.up, na.rm=T),
-         armID = pubID,
-         Arm='')
-study_info <- rbind(study_info, x) %>% arrange(pubID)
+#
+## Update Wu 2014 study start date
+study_info[study_info$pubID=='Wu_2014',]$max.f.up <-  396
+# ## Update Joo information
+# study_info[study_info$pubID=='Joo_2015',]$end.fup = 2007
+# study_info[study_info$pubID=='Joo_2015',]$end.enrollment = NA
+#
+# ## Make Siegel_1969_female the overall study record
+# study_info$armID[study_info$armID=='Siegel_1969_female'] <- 'Siegel_1969'
+#
+# ## Create an overall record for Hashimoto
+# x <- study_info %>% dplyr::filter(Author=='Hashimoto') %>%
+#   summarise_all(funs(ifelse(length(unique(.))==1, unique(.), NA)))
+# bl <- study_info %>% dplyr::filter(Author=='Hashimoto')
+# x <- x %>%
+#   mutate(number = sum(bl$number),
+#          female = weighted.mean(bl$female, bl$number),
+#          f.up.months = weighted.mean(bl$f.up.months, bl$number),
+#          max.f.up = max(bl$max.f.up, na.rm=T),
+#          armID = pubID,
+#          Arm='')
+# study_info <- rbind(study_info, x) %>% arrange(pubID)
 
 ## Fix the information in the Design field
 study_info <- study_info %>%
@@ -47,13 +49,13 @@ study_info <- study_info %>%
 
 # New variables -----------------------------------------------------------
 
-## Identify male only studies, which will be kept separate
-male_only <- study_info %>% filter(female==0) %>%
-  select(pubID) %>% left_join(study_info %>% dplyr::count(pubID)) %>%
-  filter(n==1)
-study_info <- study_info %>%
-  mutate(male.only = factor(ifelse(pubID %in% male_only$pubID, 'Y','N')))
-
+# ## Identify male only studies, which will be kept separate
+# male_only <- study_info %>% filter(female==0) %>%
+#   select(pubID) %>% left_join(study_info %>% dplyr::count(pubID)) %>%
+#   filter(n==1)
+# study_info <- study_info %>%
+#   mutate(male.only = factor(ifelse(pubID %in% male_only$pubID, 'Y','N')))
+#
 ## Identify arms that represent full studies
 
 bl <- study_info %>% filter(armID==pubID) %>% select(armID)
@@ -83,6 +85,7 @@ study_info <- study_info %>%
 
 study_info <- study_info %>%
   mutate(Country = str_to_title(Country),
+         Country = ifelse(Country=='Us','Usa',Country),
          Country = ifelse(Country %in% c('Usa','Uk'), str_to_upper(Country), Country),
          Country = str_replace(Country, '[\\.,]',''))
 transform_country <- c(

@@ -44,8 +44,8 @@ study_info <- study_info %>%
   mutate(data = map(data, ~mutate(., dis.dur.yrs = fillin(dis.dur.yrs)))) %>%
   unnest() %>%
   mutate(
-    Lag = ifelse(Time0=='diagnosis', 0, dis.dur.yrs), # create Lag variable
-    Lag = ifelse(is.na(Lag), median(Lag[Time0=='studyentry'], na.rm=T),Lag))
+    Lag = ifelse(Time0=='diagnosis', 0, dis.dur.yrs)) %>%  # create Lag variable
+  mutate(Lag = ifelse(is.na(Lag), median(Lag[Time0=='studyentry'], na.rm=T),Lag))
 #study_info$KM.fig[study_info$Author=='Zitnan'] <- NA # Fig is not KM curve
 
 # #delete second and third row

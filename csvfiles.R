@@ -6,7 +6,7 @@ source('preamble.R')
 csvfiles = dir(datadir, pattern='csv')
 # if(length(csvfiles)==0 & datadir==AD_dirs_mac['data']) stop("Attach drive")
 csvfiles <- csvfiles[!str_detect(csvfiles,'exclude')]
-# 
+#
 # csvfiles <- csvfiles[!str_detect(csvfiles,'need')]
 # csvfiles <- csvfiles[!str_detect(csvfiles,'child')]
 # csvfiles <- csvfiles[!str_detect(csvfiles,'cts')]
@@ -16,9 +16,9 @@ csv_summaries <- csvfiles[str_detect(csvfiles,'summ')]
 # csv_cumhaz <- csvfiles[str_detect(csvfiles,'cumhaz')]
 # csv_cummort <- csvfiles[str_detect(csvfiles, 'cummort')]
 
-csv_km <- setdiff(csvfiles, c(csv_summaries, csv_cumhaz, csv_cummort))
+csv_km <- setdiff(csvfiles, c(csv_summaries))
 
-save(csv_km, csv_summaries, csv_cumhaz, csv_cummort, file='data/rda/graph_types.rda')
+save(csv_km, csv_summaries, file='data/rda/graph_types.rda')
 
 ids_from_filenames <- csvfiles %>%
   str_replace( '-([0-9]{4})','_\\1') %>%
@@ -48,6 +48,8 @@ pngfiles %>%
   str_extract('^[\\w -]+_[0-9]{4}[abc]?') %>%
   str_to_title() -> png_id
 png <- tibble(pngfiles, png_id)
+
+old_png <- read_csv('pngfiles_orig.csv')
 # png %>%
 #   rbind(data.frame(pngfiles = rep('Urman-1977-fig1.png',2),
 #                    png_id = paste0('Urman_1977',c('a','b')))) %>%
@@ -56,17 +58,17 @@ png <- tibble(pngfiles, png_id)
 # write.csv(png, file='pngfiles.csv')
 
 
-bl = fig_metadata %>% left_join(png, by=c('ids'='png_id'))
+bl = fig_metadata %>% left_join(old_png, by=c('ids'='png_id'))
 # bl$pngfiles[bl$filename=='Ballou-1982-fig2-summ.csv'] <- 'Ballou-1982-fig2.png'
 # bl$pngfiles[bl$filename=='Ballou-1982-fig3-summ.csv'] <- 'Ballou-1982-fig3.png'
 bl <- distinct(bl)
 # write.csv(bl, file='pngfiles.csv', row.names=F) # Add meta-data to this file
 # don't write this file again...metadata is already included
 
-png_info <- read_csv('pngfiles.csv') %>%
+png_info <- read_csv('pngfiles_orig.csv')[,-1] %>%
   mutate(`from SLE` = ifelse(is.na(`from SLE`), 'n','y'),
          years = ifelse(is.na(years),'y','n')) %>%
   dplyr::rename(TimeInYears = years)
-fig_metadata <- left_join(fig_metadata, png_info)
+fig_metadata <- left_join(fig_metadata, png_info, by=c('ids'='png_id'))
 
 save(fig_metadata, file='data/rda/fig_metadata.rda')

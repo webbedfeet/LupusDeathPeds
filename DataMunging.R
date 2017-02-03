@@ -154,6 +154,7 @@ study_info %>% left_join(
 
 study_info %>% mutate(Lag2 = Lag, # Old lag variable
                       Lag = ifelse(`from SLE`=='y' & !is.na(`from SLE`), 0, Lag)) -> study_info
+study_info %>% mutate(max.f.up = ifelse(is.na(max.f.up), 12*(end_of_study-start_of_study),max.f.up)) -> study_info
 save(study_info, file='data/rda/final_study_info.rda', compress=T)
 
 

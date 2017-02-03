@@ -1,15 +1,15 @@
 
 # Workflows
-data:  study_info fig_metadata update_study_info
+data: fig_metadata update_study_info
 figdata: fig_metadata KM_digitized
 survdat: KM2IPD summ2IPD fup
 
 
 ## study_info		: Create data from study characteristics
-study_info: 	 study_info.R
-	R CMD BATCH study_info.R
+# study_info: 	 study_info_ped.R
+# 	R CMD BATCH study_info_ped.R
 
-update_study_info: study_info.R csvfiles.R
+update_study_info: study_info_ped.R csvfiles.R
 	R CMD BATCH DataMunging.R
 
 ## fig_metadata 		: Generate metadata for digitized curves
@@ -37,11 +37,10 @@ membership: DataMunging.R
 	R CMD BATCH DataMunging.R
 
 ## Creating MCMC data for adult study
-adult_data: MovingAverage.R data/rda/KM2IPD.rda data/rda/summaries2IPD.rda
+peds_data: MovingAverage.R data/rda/KM2IPD.rda data/rda/summaries2IPD.rda
 	R CMD BATCH MovingAverage.R
-	cd data/mcmc/adult; python template.py; cd ../../..
-	cd data/mcmc/adult_10; python template.py; cd ../../..
-	cd data/mcmc/inception; python template.py; cd ../../..
+	cd data/mcmc/peds; python template.py; cd ../../..
+	cd data/mcmc/peds_10; python template.py; cd ../../..
 
 
 

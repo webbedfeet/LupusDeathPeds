@@ -11,30 +11,30 @@ load('data/rda/final_study_info.rda')
 # fig_metadata <- fig_metadata %>%
   # mutate(male.only = ifelse(ids %in% study_info$pubID[study_info$male.only=='Y'],'Yes','No'))
 
-KM_full <- fig_metadata %>% filter(male.only=='No', is.KM=='Yes')
+KM_full <- fig_metadata %>% filter(is.KM=='Yes')
 Ns <- study_info$number; names(Ns) <- study_info$pubID
 KM_full$N <- Ns[KM_full$ids]
 KM_full <- KM_full %>% mutate(N = ifelse(needs.pooling=='Yes',NA, N))
-KM_full$N[is.na(KM_full$N)] <- c(
-  83,271,170,175,153, # Artim-Essen
-  193,40, # Bujan
-  62,43, # Cardoso
-  511, 156, # Drenkard
-  221, 117, 103, 176, # Fernandez
-  115, 101, # Flower
-  # 54, 101, 151, # Funauchi
-  147, 35, # Jallouli
-  64, 638, 52, # Johnson
-  276, 67, # Kao
-  795, 133, # Merola
-  32, 645, # Mok
-  150, 82, # Ruiz-Irastorza
-  43, 116, # Schmid
-  1141, 339, # Shinjo
-  76, 4, # Stoll
-  # 142,73 # Voss
-  197, 211# Ward
-)
+# KM_full$N[is.na(KM_full$N)] <- c(
+#   83,271,170,175,153, # Artim-Essen
+#   193,40, # Bujan
+#   62,43, # Cardoso
+#   511, 156, # Drenkard
+#   221, 117, 103, 176, # Fernandez
+#   115, 101, # Flower
+#   # 54, 101, 151, # Funauchi
+#   147, 35, # Jallouli
+#   64, 638, 52, # Johnson
+#   276, 67, # Kao
+#   795, 133, # Merola
+#   32, 645, # Mok
+#   150, 82, # Ruiz-Irastorza
+#   43, 116, # Schmid
+#   1141, 339, # Shinjo
+#   76, 4, # Stoll
+#   # 142,73 # Voss
+#   197, 211# Ward
+# )
 
 # Read in the digitized data in a list
 

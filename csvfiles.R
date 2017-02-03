@@ -65,10 +65,11 @@ bl <- distinct(bl)
 # write.csv(bl, file='pngfiles.csv', row.names=F) # Add meta-data to this file
 # don't write this file again...metadata is already included
 
-png_info <- read_csv('pngfiles_orig.csv')[,-1] %>%
+png_info <- read_csv('pngfiles_orig.csv') %>%
   mutate(`from SLE` = ifelse(is.na(`from SLE`), 'n','y'),
          years = ifelse(is.na(years),'y','n')) %>%
   dplyr::rename(TimeInYears = years)
-fig_metadata <- left_join(fig_metadata, png_info, by=c('ids'='png_id'))
+fig_metadata <- left_join(fig_metadata, png_info, by=c('ids'='png_id')) %>%
+  select(-pngfiles) %>% distinct()
 
 save(fig_metadata, file='data/rda/fig_metadata.rda')

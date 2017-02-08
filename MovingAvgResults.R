@@ -12,3 +12,11 @@ print(plt)
 
 dev.off()
 
+'%!in%' <- Negate('%in%')
+pdf(file = 'graphs/pedsdevelopingMA.pdf')
+results <- 'peds_developing' %>% mcmcout() %>%
+  collapseResults() %>% filter(Dev=='Developed') %>%
+  mutate(Dev = 'Developing countries') %>%
+  mutate_each(funs(ifelse(yr %in% c(1988,1989),NA, .)), LB, Med, UB)
+pltResults(results)
+dev.off()

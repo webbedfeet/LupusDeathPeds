@@ -78,6 +78,12 @@ ipds <- c(KM2IPD, summaries2IPD)
 # ipds <- ipds[-which(names(ipds)=='Manger_2002')]
 createDatasets(membership, ipds, outdir='peds', minkm=2, info=study_info, followup=fup_data)
 
+developing <- study_info %>% filter(Developed=='Developing')
+ids_developing <- developing$pubID
+ipd1 <- ipds[intersect(names(ipds), ids_developing)]
+fup1 <- fup_data %>% filter(pubID %in% ids_developing)
+createDatasets(membership, ipd1, followup = fup1, info=developing, outdir='peds_developing', minkm=2)
+
 load('data/rda/window_membership_10.rda')
 createDatasets(membership_10,ipds,outdir='peds_10', minkm = 2)
 

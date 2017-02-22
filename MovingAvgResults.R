@@ -20,3 +20,12 @@ results <- 'peds_developing' %>% mcmcout() %>%
   mutate_each(funs(ifelse(yr %in% c(1988,1989),NA, .)), LB, Med, UB)
 pltResults(results)
 dev.off()
+
+pdf(file = 'graphs/pedsdevelopingMA_10.pdf')
+results <- 'peds_developing_10' %>% mcmcout() %>%
+  collapseResults() %>% filter(Dev=='Developed') %>%
+  mutate(Dev = 'Developing countries') %>%
+  mutate_each(funs(ifelse(yr %in% c(1988,1989),NA, .)), LB, Med, UB)
+pltResults(results)
+dev.off()
+

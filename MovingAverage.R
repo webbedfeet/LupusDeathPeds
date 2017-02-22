@@ -87,4 +87,4 @@ createDatasets(membership, ipd1, followup = fup1, info=developing, outdir='peds_
 load('data/rda/window_membership_10.rda')
 createDatasets(membership_10,ipds,outdir='peds_10', minkm = 2)
 
-
+createDatasets(membership_10, ipd1, followup = fup1, info = developing, outdir = "peds_developing_10", minkm=2)

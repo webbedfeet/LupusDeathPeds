@@ -29,3 +29,6 @@ results <- 'peds_developing_10' %>% mcmcout() %>%
 pltResults(results)
 dev.off()
 
+# Compute 2008-2014 summary
+
+bl <- pooledCR(2008,2016)

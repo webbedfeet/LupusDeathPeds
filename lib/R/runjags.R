@@ -1,8 +1,8 @@
 #' Send data to JAGS
 #'
-#' Given a data set that is formated for ingestion into JAGS, e.g., the 
-#' output from datForJags, this function wraps rjags and sets some defaults for 
-#' parameters to be sent to rjags. The JAGS files are hardcoded here for the 
+#' Given a data set that is formated for ingestion into JAGS, e.g., the
+#' output from datForJags, this function wraps rjags and sets some defaults for
+#' parameters to be sent to rjags. The JAGS files are hardcoded here for the
 #' particular application we are considering here, but this can certainly be
 #' adapted.
 #' @param dat Data in the form of a list, conforming to the JAGS program being run.
@@ -19,7 +19,7 @@ runjags <- function(dat, nadapt=1000, niter=1000, nchains=1, thin=1){
   load.module('lecuyer')
   # source('fullmodel.mixed.txt')
   if(dat$N2 > 0){
-    inits <- with(dat, 
+    inits <- with(dat,
                   list(lambda = rep(1,J),
                        nu = rep(1, J),
                        .RNG.name = "lecuyer::RngStream",
@@ -30,19 +30,19 @@ runjags <- function(dat, nadapt=1000, niter=1000, nchains=1, thin=1){
                        #                      ypred24 = 100
                   )
     )
-    
-    parameters <- c('lambda','nu','pr5','pr10','pr15')
-    
+
+    parameters <- c('lambda','nu','pr5','pr10')
+
     mod <- jags.model("fullmodelcts.bug",
                       data = dat,
                       inits = inits,
                       n.chains = nchains, # Change to 4 after testing
                       n.adapt = nadapt)
     #update(mod, n.iter=1000) # Burn-in
-    codaSamples <- coda.samples(mod, variable.names=parameters, 
+    codaSamples <- coda.samples(mod, variable.names=parameters,
                                 n.iter=niter, thin=thin)
   } else {
-    inits <- with(dat, 
+    inits <- with(dat,
                   list(lambda = rep(1,J),
                        nu = rep(1, J),
                        .RNG.name = "lecuyer::RngStream",
@@ -53,16 +53,16 @@ runjags <- function(dat, nadapt=1000, niter=1000, nchains=1, thin=1){
                        #                      ypred24 = 100
                   )
     )
-    
-    parameters <- c('lambda','nu','pr5','pr10','pr15')
-    
+
+    parameters <- c('lambda','nu','pr5','pr10')
+
     mod <- jags.model("fullmodelcts2.bug",
                       data = dat,
                       inits = inits,
                       n.chains = nchains, # Change to 4 after testing
                       n.adapt = nadapt)
     #update(mod, n.iter=1000) # Burn-in
-    codaSamples <- coda.samples(mod, variable.names=parameters, 
+    codaSamples <- coda.samples(mod, variable.names=parameters,
                                 n.iter=niter, thin=thin)
   }
   return(codaSamples)

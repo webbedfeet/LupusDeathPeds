@@ -11,7 +11,7 @@
 #' @param startyr Start year of interval
 #' @param  endyr End year of interval
 #' @param  level=0.95 Coverage probability of the interval
-pooledCR <- function(startyr, endyr,  level=0.95, digits=3){
+pooledCR <- function(startyr, endyr,  level=0.95, digits=3, inception=F){
   # Packages
   require(rjags)
   require(stringr)
@@ -30,9 +30,10 @@ pooledCR <- function(startyr, endyr,  level=0.95, digits=3){
   ind <- membership[,paste0('Window',window_id)] %>% apply(1, function(x) sum(x)>0)
   studies <- membership$pubID[ind]
 
+
   # Acquire study metadata
   load('data/rda/final_study_info.rda')
-
+  if(inception) studies <- intersect(studies, study_info$pubID[study_info$inception==1])
 
   # Acquire study data
   load('data/rda/KM2IPD.rda')
@@ -61,6 +62,6 @@ pooledCR <- function(startyr, endyr,  level=0.95, digits=3){
                                paste('LCB (', level,')', sep=''),
                                paste('UCB (', level,')', sep=''))
   quant[,c(3,4,5)] <- signif(100*(1-quant[,c(3,5,4)]),digits)
-  return(quant)
+  return(list(output=quant, studies=studies))
 }
 

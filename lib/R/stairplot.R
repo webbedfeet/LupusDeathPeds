@@ -1,9 +1,8 @@
 #' Extracting data for staircase plot
-#' 
+#'
 #' This function takes the baseline study information and the study arm and extracts information needed
 #' for creating a \code{\link{stairplot}}.
 #' @param dat=basedata The \code{data.frame} holding study information
-#' @param Arm='FullStudy' The study arm we want to plot
 #' @return A \code{data.frame} object that can be input into \code{stairplot}
 #' @section Details:
 #' The input \code{data.frame} needs the following fields:
@@ -21,16 +20,16 @@
 stairdata <- function(dat=basedata){
   dat <- dat %>%
     select(pubID, armID,Author, pubdate, start_of_study, yr_of_study, end_of_study, yr_of_study_end, Developed, Design, number) %>%
-    arrange(start_of_study) %>% 
+    arrange(start_of_study) %>%
     distinct()
   return(dat)
 }
 
 #' Plotting "staircase" plots that show the temporal extent of each study
-#' 
+#'
 #' This function takes a summary data.frame with start and end dates of the study as well as start and
 #' end dates of the analytic window contributed by the study, and plots it, sorted by start date
-#' 
+#'
 #' @author Abhijit Dasgupta <abhijit.dasgupta@nih.gov>
 #' @param d A \code{data.frame} object created by \code{\link{stairdata}}
 #' @param title='' The plot title
@@ -38,7 +37,7 @@ stairdata <- function(dat=basedata){
 #' @return A ggplot object
 stairplot <- function(d, title='',lims=NULL){
   require(ggplot2)
-  ggplot(d, aes(x = seq_along(yr_of_study), y=yr_of_study, 
+  ggplot(d, aes(x = seq_along(yr_of_study), y=yr_of_study,
                 ymin=start_of_study, ymax=end_of_study))+
     geom_point(aes(size=sqrt(number), color=Design))+
     geom_linerange()+

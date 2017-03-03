@@ -34,9 +34,10 @@ datForJags <- function(ipd, follow=fup_data, info=study_info){
 # Follow-up data
   if(!is.null(follow)){
   out <- follow %>% select(max.f.up, n.death, number, Developed, Lag) %>%
-    rename(maxfollowup = max.f.up, geog2=Developed, n = number, Events=n.death) %>%
-    mutate(isCensored2 = as.integer(rep(1,n()))) %>%
-    mutate(Y = rep(NA, n())) %>%
+    dplyr::rename(maxfollowup = max.f.up, geog2=Developed, n = number, Events=n.death) %>%
+    # mutate(isCensored2 = as.integer(rep(1,n()))) %>%
+    mutate(isCensored2 = 1) %>%
+    mutate(Y = NA) %>%
     mutate(geog2 = as.factor(geog2))
   dat_follow <- as.list(out)
   dat_follow$N2 <- nrow(out)

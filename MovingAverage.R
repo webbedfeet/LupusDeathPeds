@@ -88,3 +88,11 @@ load('data/rda/window_membership_10.rda')
 createDatasets(membership_10,ipds,outdir='peds_10', minkm = 2)
 
 createDatasets(membership_10, ipd1, followup = fup1, info = developing, outdir = "peds_developing_10", minkm=2)
+
+## Let's do the same for developed countries
+developed <- study_info %>% filter(Developed=='Developed')
+ids_developed <- developed$pubID
+ipd1 <- ipds[intersect(names(ipds), ids_developed)]
+fup1 <- fup_data %>% filter(pubID %in% ids_developed)
+createDatasets(membership, ipd1, followup=fup1, info=developed, outdir='peds_developed', minkm=2)
+createDatasets(membership_10, ipd1, followup=fup1, info=developed, outdir = 'peds_developed_10', minkm=2)

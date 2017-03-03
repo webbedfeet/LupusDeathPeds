@@ -45,9 +45,17 @@ dev.off()
 # Compute 2008-2014 summary
 
 bl <- pooledCR(2008,2016)
-library(ReporteRs)
-output <- docx() %>%
-  addParagraph(value="Pooled estimate, 2008-2016 (mortality rate)") %>%
-  addFlexTable(FlexTable(bl)) %>%
-  writeDoc(file = 'docs/pooledEstimate.docx')
+# library(ReporteRs)
+# output <- docx() %>%
+#   addParagraph(value="Pooled estimate, 2008-2016 (mortality rate)") %>%
+#   addFlexTable(FlexTable(bl)) %>%
+#   writeDoc(file = 'docs/pooledEstimate.docx')
+# Not working on work desktop -- Java problem
+output <- bl$output %>% mutate(out = paste0(Median,' (',`LCB (0.95)`,', ',`UCB (0.95)`,')')) %>%
+  select(Developed, Year, out) %>%
+  mutate(Year = paste0(Year, ' year')) %>%
+  spread(Year, out)
+devcount <- study_info %>% filter(armID==pubID, pubID %in% bl$studies) %>% count(Developed)
+output <- cbind(output, n = devcount$n)[,c(1,4,3,2)]
+
 

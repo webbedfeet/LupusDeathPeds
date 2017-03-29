@@ -12,7 +12,7 @@ plt <- 'peds_developing' %>% mcmcout() %>%
   collapseResults() %>% filter(Dev=='Developed') %>%
   mutate(Dev = 'Low/Middle Income Countries') %>%
   mutate_each(funs(ifelse(yr %in% c(1988,1989),NA, .)), LB, Med, UB) %>%
-  pltResults()+scale_color_manual(values=cbbPalette)
+  pltResults()+scale_color_brewer(palette='Set1')
 print(plt)
 dev.off()
 ggsave('graphs/Fig4a.pdf')
@@ -31,7 +31,7 @@ plt <- 'peds_developed' %>% mcmcout() %>%
   collapseResults() %>%
   filter(Dev=='Developed') %>%
   mutate(Dev = 'High Income Countries') %>%
-  pltResults()+scale_color_manual(values=cbbPalette)
+  pltResults()+scale_color_brewer(palette = 'Set1')
 print(plt)
 dev.off()
 ggsave('graphs/Fig4b.pdf')
@@ -45,7 +45,19 @@ plt <- 'peds_developed_10' %>% mcmcout() %>%
 print(plt)
 dev.off()
 
-# Compute 2008-2014 summary
+bl1 <- 'peds_developing' %>% mcmcout() %>%
+  collapseResults() %>% filter(Dev=='Developed') %>%
+  mutate(Dev = 'Low/Middle Income Countries') %>%
+  mutate_each(funs(ifelse(yr %in% c(1988,1989),NA, .)), LB, Med, UB)
+bl2 <- 'peds_developed' %>% mcmcout() %>%
+  collapseResults() %>%
+  filter(Dev=='Developed') %>%
+  mutate(Dev = 'High Income Countries')
+bl <- bind_rows(bl1,bl2)
+
+pltResults(bl)+scale_color_brewer(palette='Set1')
+ggsave('graphs/Fig4.pdf')
+# Compute 2008-2014 summary ----
 
 bl <- pooledCR(2008,2016)
 # library(ReporteRs)

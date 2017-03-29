@@ -15,6 +15,7 @@ plt <- 'peds_developing' %>% mcmcout() %>%
   pltResults()+scale_color_manual(values=cbbPalette)
 print(plt)
 dev.off()
+ggsave('graphs/Fig4a.pdf')
 
 pdf(file = 'graphs/pedsdevelopingMA_10.pdf')
 plt <- 'peds_developing_10' %>% mcmcout() %>%
@@ -30,9 +31,10 @@ plt <- 'peds_developed' %>% mcmcout() %>%
   collapseResults() %>%
   filter(Dev=='Developed') %>%
   mutate(Dev = 'High Income Countries') %>%
-  pltResults()#+scale_color_manual(values=cbbPalette)
+  pltResults()+scale_color_manual(values=cbbPalette)
 print(plt)
 dev.off()
+ggsave('graphs/Fig4b.pdf')
 
 pdf(file = 'graphs/pedsdevelopedMA_10.pdf')
 plt <- 'peds_developed_10' %>% mcmcout() %>%

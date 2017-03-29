@@ -16,14 +16,19 @@ plt_developed <- study_info %>%
   mutate(yr_of_study_end = end_of_study_10) %>%
   filter(Developed == 'Developed') %>%
   stairdata %>%
-  stairplot() + ggtitle('Developed countries')
+  stairplot() + ggtitle('High Income Countries')
+print(plt_developed)
+ggsave('graphs/SupplFig5a.pdf')
 
 plt_developing <- study_info %>%
   mutate(pubID = pubID %>% str_replace('_', ' (') %>% paste0(')') %>% str_replace('_','')) %>%
   mutate(yr_of_study_end = end_of_study_10) %>%
   filter(Developed == 'Developing') %>%
   stairdata %>%
-  stairplot() + ggtitle('Developing countries')
+  stairplot() + ggtitle('Low/Middle Income Countries')
+
+print(plt_developing)
+ggsave('graphs/SupplFig5b.pdf')
 
 pdf('graphs/stairplot_peds.pdf')
 print(plt_overall)

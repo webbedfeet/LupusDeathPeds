@@ -4,23 +4,24 @@ reload()
 load('data/rda/window_membership.rda')
 load('data/rda/study_info.rda')
 
+cbbPalette <- c("#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
 
 '%!in%' <- Negate('%in%')
 pdf(file = 'graphs/pedsdevelopingMA.pdf')
 plt <- 'peds_developing' %>% mcmcout() %>%
   collapseResults() %>% filter(Dev=='Developed') %>%
-  mutate(Dev = 'Developing countries') %>%
+  mutate(Dev = 'Low/Middle Income Countries') %>%
   mutate_each(funs(ifelse(yr %in% c(1988,1989),NA, .)), LB, Med, UB) %>%
-  pltResults()
+  pltResults()+scale_color_manual(values=cbbPalette)
 print(plt)
 dev.off()
 
 pdf(file = 'graphs/pedsdevelopingMA_10.pdf')
 plt <- 'peds_developing_10' %>% mcmcout() %>%
   collapseResults() %>% filter(Dev=='Developed') %>%
-  mutate(Dev = 'Developing countries') %>%
+  mutate(Dev = 'Low/Middle Income Countries') %>%
   mutate_each(funs(ifelse(yr %in% c(1988,1989),NA, .)), LB, Med, UB) %>%
-  pltResults()
+  pltResults()+scale_color_manual(values=cbbPalette)
 print(plt)
 dev.off()
 
@@ -28,8 +29,8 @@ pdf(file = 'graphs/pedsdevelopedMA.pdf')
 plt <- 'peds_developed' %>% mcmcout() %>%
   collapseResults() %>%
   filter(Dev=='Developed') %>%
-  mutate(Dev = 'Developed countries') %>%
-  pltResults()
+  mutate(Dev = 'High Income Countries') %>%
+  pltResults()#+scale_color_manual(values=cbbPalette)
 print(plt)
 dev.off()
 
@@ -37,8 +38,8 @@ pdf(file = 'graphs/pedsdevelopedMA_10.pdf')
 plt <- 'peds_developed_10' %>% mcmcout() %>%
   collapseResults() %>%
   filter(Dev=='Developed') %>%
-  mutate(Dev = 'Developed countries') %>%
-  pltResults()
+  mutate(Dev = 'High Income Countries') %>%
+  pltResults()+scale_color_manual(values=cbbPalette)
 print(plt)
 dev.off()
 
